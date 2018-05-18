@@ -328,6 +328,13 @@ slots:
       holds between two entities where exposure to one entity alters the chance of developing the other 
     in_subset:
       - translator_minimal
+
+  - name: predisposes
+    is_a: affects risk for
+    description: >-
+      holds between two entities where exposure to one entity increases the chance of developing the other 
+    in_subset:
+      - translator_minimal
     mappings:
       - SEMMEDDB:PREDISPOSES
 
