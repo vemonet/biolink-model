@@ -26,6 +26,20 @@ id_prefixes:
   - OIO
 
 types:
+  relationship type:
+    description: >-
+      An OWL property used as an edge label
+    typeof: uri
+
+  relationship subject:
+    description: >-
+        The URI of a relationship subject
+    typeof: uri
+
+  relationship object:
+    description: >-
+        The URI of a relationship object
+    typeof: uri
 
 ## Still neeed definition
   phenotype:
@@ -35,7 +49,7 @@ types:
   chemical formula value:
 
   identifier type:
-    typeof: string
+    typeof: uri
     description: >-
       A string that is intended to uniquely identify a thing
       May be URI in full or compact (CURIE) form
@@ -1142,8 +1156,8 @@ slots:
     description: >-
       A grouping for any property that holds between a node and a value
     domain: named thing
-    mappings:
-      - owl:topAnnotationProperty
+#    mappings:
+#      - owl:topAnnotationProperty
 
   id:
     is_a: node property
@@ -1232,7 +1246,7 @@ slots:
       connects an association to the subject of the association.
       For example, in a gene-to-phenotype association, the gene is subject and phenotype is object.
     required: true
-#    range: named thing
+    range: relationship subject
     mappings:
       - rdf:subject
       - owl:annotatedSource
@@ -1244,7 +1258,7 @@ slots:
       connects an association to the object of the association.
       For example, in a gene-to-phenotype association, the gene is subject and phenotype is object.
     required: true
-#    range: named thing
+    range: relationship object
     local_names:
       ga4gh: descriptor
       neo4j: node with incoming relationship
@@ -1272,9 +1286,9 @@ slots:
       ga4gh: annotation predicate
       translator: predicate
     mappings:
-      - "rdf:predicate"
-      - "owl:annotatedProperty"
-      - "oban:association_has_predicate"
+      - rdf:predicate
+      - owl:annotatedProperty
+      - oban:association_has_predicate
       
   negated:
     is_a: association slot
@@ -1515,17 +1529,110 @@ slots:
   end interbase coordinate:
     is_a: interbase coordinate
     
+  # Knowledge graph level slots level slots
+  kg_id:
+      domain: knowledge graph
+      primary_key: true
+      description: >-
+        a globally unique identifier for a knowledge graph
+      alias: id
+
+  prefixes:
+      multivalued: true
+      domain: knowledge graph
+      range: prefix
+      inlined: true
+      description: >-
+        Additional prefixes to be added to the context beyond those fetched from prefixcommons in id_prefixes
+
+  default_curi_maps:
+      multivalued: true
+      domain: knowledge graph
+      description: >-
+        List of prefixcommon biocontexts to be fetched to resolve id_prefixes and inline prefix variables
+
+  default_prefix:
+      domain: knowledge graph
+      range: string
+      description: >-
+        default and base prefix -- used for ':' identifiers, @base and @vocab
+
+  entities:
+      domain: knowledge graph
+      range: named thing
+      multivalued: true
+      inlined: true
+      description: >-
+        the collection of named entities in the knowledge graph
+
+  associations:
+      domain: knowledge graph
+      range: association
+      multivalued: true
+      inlined: true
+      description: ->
+        the collection of associations in the knowledge graph
+
+  kg_version:
+      domain: knowledge graph
+      description: >-
+        Version of the biolink model used to load the schema. Supplied by the loader
+
+  kg_source:
+      domain: knowledge graph
+      description: >-
+        name, uri or description of the source of the knowledge source.  Supplied by the loader
+
+  kg_source_version:
+      domain: knowledge graph
+      range: integer
+      description: >-
+        version identifier of the knowledge graph.  Supplied by the loader
+
+  generation_date:
+      domain: knowledge graph
+      range: date
+      description: >-
+        date that the knowledge graph was loaded/generated.  Supplied by the loader
+
+  # Slots for prefix type
+  local name:
+      domain: prefix
+      primary_key: true
+      description: >-
+        the nsname (sans ':' for a given prefix)
+
+  prefix uri:
+      domain: prefix
+      description: >-
+        A URI associated with a given prefix
+    
 classes:
+
+  prefix:
+    description: "Prefix URI map"
+    slots:
+    - local name
+    - prefix uri
+
+  knowledge graph:
+      description: "A collection of knowledge elements definitions"
+      slots:
+        - kg_id
+        - prefixes
+        - default_curi_maps
+        - default_prefix
+        - entities
+        - associations
+        - kg_version
+        - kg_source
+        - kg_source_version
+        - generation_date
+
 
   ## ------
   ## RELATIONSHIP TYPES
   ## ------
-
-  relationship type:
-    description: >-
-      An OWL property used as an edge label
-  
-
   attribute:
     subclass_of: PATO:0000001
     mixins:

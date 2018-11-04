@@ -1,5 +1,5 @@
 # Auto generated from biolink-model.yaml by pythongen.py version: 0.0.4
-# Generation date: 2018-10-28 14:16
+# Generation date: 2018-11-04 11:41
 # Schema: biolink model
 #
 # id: https://biolink.github.io/biolink-model/ontology/biolink.ttl
@@ -18,6 +18,18 @@ inherited_slots: List[str] = []
 
 
 # Type names
+class RelationshipType(str):
+    pass
+
+
+class RelationshipSubject(str):
+    pass
+
+
+class RelationshipObject(str):
+    pass
+
+
 class Phenotype(str):
     pass
 
@@ -79,6 +91,14 @@ class BiologicalSequence(str):
 
 
 # Class references
+class PrefixLocalName(str):
+    pass
+
+
+class KnowledgeGraphKg_id(str):
+    pass
+
+
 class NamedThingId(IdentifierType):
     pass
 
@@ -560,11 +580,41 @@ class GrossAnatomicalStructureId(IdentifierType):
 
 
 @dataclass
-class RelationshipType(YAMLRoot):
+class Prefix(YAMLRoot):
     """
-    An OWL property used as an edge label
+    Prefix URI map
     """
-    pass
+    local_name: PrefixLocalName
+    prefix_uri: Optional[str] = None
+
+
+@dataclass
+class KnowledgeGraph(YAMLRoot):
+    """
+    A collection of knowledge elements definitions
+    """
+    id: KnowledgeGraphKg_id
+    prefixes: Dict[PrefixLocalName, Union[str, Prefix]] = empty_dict()
+    default_curi_maps: List[str] = empty_list()
+    default_prefix: Optional[str] = None
+    entities: Dict[NamedThingId, Union[dict, "NamedThing"]] = empty_dict()
+    associations: Dict[AssociationId, Union[dict, "Association"]] = empty_dict()
+    kg_version: Optional[str] = None
+    kg_source: Optional[str] = None
+    kg_source_version: Optional[int] = None
+    generation_date: Optional[datetime.date] = None
+
+    def _fix_elements(self):
+        super()._fix_elements()
+        for k, v in self.prefixes.items():
+            if not isinstance(v, Prefix):
+                self.prefixes[k] = Prefix(k, v)
+        for k, v in self.entities.items():
+            if not isinstance(v, NamedThing):
+                self.entities[k] = NamedThing(id=k, **({} if v is None else v))
+        for k, v in self.associations.items():
+            if not isinstance(v, Association):
+                self.associations[k] = Association(id=k, **({} if v is None else v))
 
 
 @dataclass
@@ -1677,10 +1727,10 @@ class Association(InformationContentEntity):
     """
     id: AssociationId = None
     association_type: Optional[OntologyClassId] = None
-    subject: str = None
+    subject: RelationshipSubject = None
     negated: bool = False
     relation: RelationshipType = None
-    object: str = None
+    object: RelationshipObject = None
     qualifiers: List[OntologyClassId] = empty_list()
     publications: List[PublicationId] = empty_list()
     provided_by: Optional[Provider] = None
@@ -1696,16 +1746,16 @@ class Association(InformationContentEntity):
             self.association_type = OntologyClassId(self.association_type)
         if self.subject is None:
             raise ValueError(f"subject must be supplied")
-        if not isinstance(self.subject, str):
-            self.subject = str(self.subject)
+        if not isinstance(self.subject, RelationshipSubject):
+            self.subject = RelationshipSubject(self.subject)
         if self.relation is None:
             raise ValueError(f"relation must be supplied")
         if not isinstance(self.relation, RelationshipType):
             self.relation = RelationshipType(self.relation)
         if self.object is None:
             raise ValueError(f"object must be supplied")
-        if not isinstance(self.object, str):
-            self.object = str(self.object)
+        if not isinstance(self.object, RelationshipObject):
+            self.object = RelationshipObject(self.object)
         self.qualifiers = [v if isinstance(v, OntologyClassId)
                            else OntologyClassId(v) for v in self.qualifiers]
         self.publications = [v if isinstance(v, PublicationId)
@@ -2314,9 +2364,9 @@ class VariantToPhenotypicFeatureAssociation(Association):
 @dataclass
 class VariantToDiseaseAssociation(Association):
     id: VariantToDiseaseAssociationId = None
-    subject: str = None
+    subject: RelationshipSubject = None
     relation: RelationshipType = None
-    object: str = None
+    object: RelationshipObject = None
 
     def _fix_elements(self):
         super()._fix_elements()
@@ -2326,16 +2376,16 @@ class VariantToDiseaseAssociation(Association):
             self.id = VariantToDiseaseAssociationId(self.id)
         if self.subject is None:
             raise ValueError(f"subject must be supplied")
-        if not isinstance(self.subject, str):
-            self.subject = str(self.subject)
+        if not isinstance(self.subject, RelationshipSubject):
+            self.subject = RelationshipSubject(self.subject)
         if self.relation is None:
             raise ValueError(f"relation must be supplied")
         if not isinstance(self.relation, RelationshipType):
             self.relation = RelationshipType(self.relation)
         if self.object is None:
             raise ValueError(f"object must be supplied")
-        if not isinstance(self.object, str):
-            self.object = str(self.object)
+        if not isinstance(self.object, RelationshipObject):
+            self.object = RelationshipObject(self.object)
 
 
 @dataclass
