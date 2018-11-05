@@ -1164,7 +1164,8 @@ slots:
     identifier: true
     description: >-
       A unique identifier for a thing.
-      Must be either a CURIE shorthand for a URI or a complete URI
+      MUST be either a CURIE shorthand for a URI or a complete URI
+      MUST use translator-mandated prefix
     in_subset:
       - translator_minimal
     domain: named thing
@@ -1563,15 +1564,15 @@ slots:
       multivalued: true
       inlined: true
       description: >-
-        the collection of named entities in the knowledge graph
+        the collection of nodes (vertices) that represent entities or concepts
 
-  associations:
+  relationship types:
       domain: knowledge graph
       range: association
       multivalued: true
       inlined: true
       description: ->
-        the collection of associations in the knowledge graph
+        the collection of edges that represent relationship types in the knowledge graph
 
   kg_version:
       domain: knowledge graph
@@ -1623,7 +1624,7 @@ classes:
         - default_curi_maps
         - default_prefix
         - entities
-        - associations
+        - relationship types
         - kg_version
         - kg_source
         - kg_source_version

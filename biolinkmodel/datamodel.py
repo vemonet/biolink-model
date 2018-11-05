@@ -1,5 +1,5 @@
 # Auto generated from biolink-model.yaml by pythongen.py version: 0.0.4
-# Generation date: 2018-11-04 11:41
+# Generation date: 2018-11-04 16:33
 # Schema: biolink model
 #
 # id: https://biolink.github.io/biolink-model/ontology/biolink.ttl
@@ -598,7 +598,7 @@ class KnowledgeGraph(YAMLRoot):
     default_curi_maps: List[str] = empty_list()
     default_prefix: Optional[str] = None
     entities: Dict[NamedThingId, Union[dict, "NamedThing"]] = empty_dict()
-    associations: Dict[AssociationId, Union[dict, "Association"]] = empty_dict()
+    relationship_types: Dict[AssociationId, Union[dict, "Association"]] = empty_dict()
     kg_version: Optional[str] = None
     kg_source: Optional[str] = None
     kg_source_version: Optional[int] = None
@@ -612,9 +612,9 @@ class KnowledgeGraph(YAMLRoot):
         for k, v in self.entities.items():
             if not isinstance(v, NamedThing):
                 self.entities[k] = NamedThing(id=k, **({} if v is None else v))
-        for k, v in self.associations.items():
+        for k, v in self.relationship_types.items():
             if not isinstance(v, Association):
-                self.associations[k] = Association(id=k, **({} if v is None else v))
+                self.relationship_types[k] = Association(id=k, **({} if v is None else v))
 
 
 @dataclass
